@@ -1,3 +1,6 @@
+/// Minefield is a custom QLabel that registers mouse presses.
+/// Written by: ezphelps
+
 #ifndef MINEFIELD_H
 #define MINEFIELD_H
 
