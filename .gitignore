@@ -33,3 +33,6 @@
 
 # Mac Things
 *.DS_Store
+
+# build folder
+*build-*
