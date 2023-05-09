@@ -19,7 +19,9 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::squareClicked);
+    connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::squareClickedSlot);
+    connect(this, &MinesweeperWindow::squareClicked, &model, &Model::squareClicked);
+    connect(&model, &Model::validSquare, this, &MinesweeperWindow::validSquareSlot);
 
     //Drawing the minefield.
     minefieldImage.fill(QColor(180, 180, 180));
@@ -85,15 +87,23 @@ MinesweeperWindow::~MinesweeperWindow()
     delete ui;
 }
 
-/// \brief MinesweeperWindow::squareClicked
+/// \brief MinesweeperWindow::squareClickedSlot
 /// Recieves a mouse press signal from the minefield label.
 /// \param x
 /// \param y
-void MinesweeperWindow::squareClicked(int x, int y)
+void MinesweeperWindow::squareClickedSlot(int x, int y)
 {
+    emit squareClicked(x, y);
+}
+
+/// \brief MinesweeperWindow::validSquareSlot
+/// Changes a square.
+/// \param numMines
+void MinesweeperWindow::validSquareSlot(int numMines, int x, int y)
+{
+
     int squareX = x / 32;
     int squareY = y / 32;
-
     for(int i = 0; i < 32; i++)
     {
         for(int j = 0; j < 32; j++)
@@ -104,4 +114,5 @@ void MinesweeperWindow::squareClicked(int x, int y)
 
     ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
 }
+
 

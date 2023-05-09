@@ -8,7 +8,11 @@
 /// Set the minefield2dArray to be empty.
 /// \param parent
 Model::Model(int width, int height, int numMines, QObject *parent)
-    : QObject{parent}
+    : QObject{parent},
+      firstSquare(true),
+      width(width),
+      height(height),
+      numMines(numMines)
 {
     //Set minefield to be empty
     for(int i = 0;i < width; i++)
@@ -18,8 +22,6 @@ Model::Model(int width, int height, int numMines, QObject *parent)
             minefield2dArray[i][j] = 0;
         }
     }
-
-    setMinefield(width, height, numMines);
 }
 
 /// \brief Model::setMinefield
@@ -28,7 +30,7 @@ Model::Model(int width, int height, int numMines, QObject *parent)
 /// \param width
 /// \param height
 /// \param numMines
-void Model::setMinefield(int width, int height, int numMines)
+void Model::setMinefield(int xCord, int yCord, int width, int height, int numMines)
 {
     //Add valid mines to the field.
     for(int i = 0; i < numMines; i++)
@@ -37,6 +39,10 @@ void Model::setMinefield(int width, int height, int numMines)
         int y = std::rand() % height;
 
         if(minefield2dArray[x][y] == 1)
+        {
+            i--;
+        }
+        else if(xCord == x && yCord == y)
         {
             i--;
         }
@@ -55,6 +61,20 @@ void Model::setMinefield(int width, int height, int numMines)
             else
                 std::cout<<minefield2dArray[j][i] << std::endl;
         }
+    }
+}
+
+/// \brief Model::squareClicked
+/// A square was clicked with the mouse
+/// \param x
+/// \param y
+void Model::squareClicked(int x, int y)
+{
+    if(firstSquare)
+    {
+        setMinefield(x, y, width, height, numMines);
+        firstSquare = false;
+        emit validSquare(0, x, y);
     }
 }
 

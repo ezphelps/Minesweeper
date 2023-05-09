@@ -24,14 +24,15 @@ public:
     ~MinesweeperWindow();
 
 public slots:
-    void squareClicked(int x, int y);
+    void squareClickedSlot(int x, int y);
+    void validSquareSlot(int numMines, int x, int y);
 
+signals:
+    void squareClicked(int x, int y);
 private:
     Ui::MinesweeperWindow *ui;
     Model model;
-
     int sizeX, sizeY;
-    array<array<int, 16>, 30> minefieldLayout;
     QImage minefieldImage;
 };
 #endif // MINESWEEPERWINDOW_H
