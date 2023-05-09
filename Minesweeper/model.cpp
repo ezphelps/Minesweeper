@@ -67,7 +67,7 @@ void Model::setMinefield(int xCord, int yCord, int width, int height, int numMin
         {
             i--;
         }
-        else if(xCord == x && yCord == y)
+        else if((x >= (xCord - 1) && (x <= (xCord + 1))) && (y >= (yCord - 1) && y <= (yCord + 1)))
         {
             i--;
         }

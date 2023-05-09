@@ -8,6 +8,7 @@
 #include <QImage>
 
 #include <model.h>
+#include "sspdeserializer.h"
 
 using std::array;
 
@@ -30,11 +31,13 @@ public slots:
 
 signals:
     void squareClicked(int x, int y);
+    void getSquareImage(QString);
 private:
     Ui::MinesweeperWindow *ui;
     Model model;
+    sspDeserializer deserializer;
     int sizeX, sizeY;
     QImage minefieldImage;
-    bool canPlay;
+    array<QImage, 10> images;
 };
 #endif // MINESWEEPERWINDOW_H

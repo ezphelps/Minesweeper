@@ -9,5 +9,6 @@
         <file>seven.ssp</file>
         <file>eight.ssp</file>
         <file>mine.ssp</file>
+        <file>zero.ssp</file>
     </qresource>
 </RCC>

@@ -12,12 +12,14 @@ SOURCES += \
     main.cpp \
     minefield.cpp \
     minesweeperwindow.cpp \
-    model.cpp
+    model.cpp \
+    sspdeserializer.cpp
 
 HEADERS += \
     minefield.h \
     minesweeperwindow.h \
-    model.h
+    model.h \
+    sspdeserializer.h
 
 FORMS += \
     minesweeperwindow.ui

@@ -22,19 +22,12 @@ MineField::MineField(QWidget *parent) : mouseIsDragging(false), QLabel(parent)
 /// \return
 bool MineField::event(QEvent *event)
 {
-    if (event->type() == QEvent:: MouseButtonPress ||
-            (mouseIsDragging && event->type() == QEvent::MouseMove))
+    if (event->type() == QEvent::MouseButtonRelease)
 
     {
-        mouseIsDragging = true;
         QMouseEvent* mEvent = (QMouseEvent*)event;
         QPoint point = mEvent->pos();
         emit mousePressed(point.x(), point.y());
-    }
-
-    else if (event->type() == QEvent::MouseButtonRelease)
-    {
-        mouseIsDragging = false;
     }
 
     return QWidget::event(event);
