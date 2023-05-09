@@ -96,7 +96,7 @@ MinesweeperWindow::~MinesweeperWindow()
 /// \param y
 void MinesweeperWindow::squareClickedSlot(int x, int y)
 {
-    if(canPlay)
+    if(canPlay == true)
     {
         canPlay = false;
         emit squareClicked((x/32), (y/32));

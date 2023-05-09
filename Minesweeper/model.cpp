@@ -71,6 +71,7 @@ void Model::setMinefield(int xCord, int yCord, int width, int height, int numMin
 /// \param y
 void Model::squareClicked(int x, int y)
 {
+    std::cout<<"precheck"<<std::endl;
     if(firstSquare)
     {
         setMinefield(x, y, width, height, numMines);
