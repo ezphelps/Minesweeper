@@ -6,10 +6,13 @@
 
 /// \brief MinesweeperWindow::MinesweeperWindow
 /// Constructor
+/// Sets up connections.
+/// Draws a starter minefield.
 /// \param parent
 MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MinesweeperWindow),
+      model(30, 16, 99),
       sizeX(30),
       sizeY(16),
       minefieldImage(QImage(sizeX*32, sizeY*32, QImage::Format_ARGB32))
@@ -70,8 +73,6 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
             }
         }
     }
-
-
 
     ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
 }

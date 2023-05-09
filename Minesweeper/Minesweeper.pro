@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     minefield.cpp \
-    minesweeperwindow.cpp
+    minesweeperwindow.cpp \
+    model.cpp
 
 HEADERS += \
     minefield.h \
-    minesweeperwindow.h
+    minesweeperwindow.h \
+    model.h
 
 FORMS += \
     minesweeperwindow.ui

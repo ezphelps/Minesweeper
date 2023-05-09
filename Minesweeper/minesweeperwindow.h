@@ -7,6 +7,8 @@
 #include <QMainWindow>
 #include <QImage>
 
+#include <model.h>
+
 using std::array;
 
 QT_BEGIN_NAMESPACE
@@ -26,6 +28,8 @@ public slots:
 
 private:
     Ui::MinesweeperWindow *ui;
+    Model model;
+
     int sizeX, sizeY;
     array<array<int, 16>, 30> minefieldLayout;
     QImage minefieldImage;
