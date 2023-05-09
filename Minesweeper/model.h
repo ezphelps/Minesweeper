@@ -19,6 +19,7 @@ public slots:
 
 signals:
     void validSquare(int numMines, int x, int y);
+    void invalidSquare(int x, int y);
 
 private:
     array<array<int, 16>, 30> minefield2dArray;

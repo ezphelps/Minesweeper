@@ -15,13 +15,16 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
       model(30, 16, 99),
       sizeX(30),
       sizeY(16),
-      minefieldImage(QImage(sizeX*32, sizeY*32, QImage::Format_ARGB32))
+      minefieldImage(QImage(sizeX*32, sizeY*32, QImage::Format_ARGB32)),
+      canPlay(true)
+
 {
     ui->setupUi(this);
 
     connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::squareClickedSlot);
     connect(this, &MinesweeperWindow::squareClicked, &model, &Model::squareClicked);
     connect(&model, &Model::validSquare, this, &MinesweeperWindow::validSquareSlot);
+    connect(&model, &Model::invalidSquare, this, &MinesweeperWindow::invalidSquareSlot);
 
     //Drawing the minefield.
     minefieldImage.fill(QColor(180, 180, 180));
@@ -93,7 +96,11 @@ MinesweeperWindow::~MinesweeperWindow()
 /// \param y
 void MinesweeperWindow::squareClickedSlot(int x, int y)
 {
-    emit squareClicked(x, y);
+    if(canPlay)
+    {
+        canPlay = false;
+        emit squareClicked((x/32), (y/32));
+    }
 }
 
 /// \brief MinesweeperWindow::validSquareSlot
@@ -101,18 +108,34 @@ void MinesweeperWindow::squareClickedSlot(int x, int y)
 /// \param numMines
 void MinesweeperWindow::validSquareSlot(int numMines, int x, int y)
 {
-
-    int squareX = x / 32;
-    int squareY = y / 32;
     for(int i = 0; i < 32; i++)
     {
         for(int j = 0; j < 32; j++)
         {
-            minefieldImage.setPixelColor(squareX * 32 + i, squareY * 32 + j, QColor(180,180,180));
+            minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, QColor(180,180,180));
         }
     }
 
     ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
+
+    canPlay = true;
 }
 
+/// \brief MinesweeperWindow::invalidSquareSlot
+/// The user clicked on a mine.
+/// \param x
+/// \param y
+void MinesweeperWindow::invalidSquareSlot(int x, int y)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        for(int j = 0; j < 32; j++)
+        {
+            minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, QColor(255,0,0));
+        }
+    }
 
+    ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
+
+    canPlay = true;
+}

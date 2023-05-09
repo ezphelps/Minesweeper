@@ -52,6 +52,7 @@ void Model::setMinefield(int xCord, int yCord, int width, int height, int numMin
         }
     }
 
+    //Print out minefield in console.
     for(int i = 0;i < height; i++)
     {
         for(int j = 0; j < width; j++)
@@ -75,6 +76,13 @@ void Model::squareClicked(int x, int y)
         setMinefield(x, y, width, height, numMines);
         firstSquare = false;
         emit validSquare(0, x, y);
+    }
+    else
+    {
+        if(minefield2dArray[x][y] == 1)
+        {
+            emit invalidSquare(x, y);
+        }
     }
 }
 

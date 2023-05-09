@@ -26,6 +26,7 @@ public:
 public slots:
     void squareClickedSlot(int x, int y);
     void validSquareSlot(int numMines, int x, int y);
+    void invalidSquareSlot(int x, int y);
 
 signals:
     void squareClicked(int x, int y);
@@ -34,5 +35,6 @@ private:
     Model model;
     int sizeX, sizeY;
     QImage minefieldImage;
+    bool canPlay;
 };
 #endif // MINESWEEPERWINDOW_H
