@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/squareImages">
+        <file>one.ssp</file>
+        <file>two.ssp</file>
+        <file>three.ssp</file>
+        <file>four.ssp</file>
+        <file>five.ssp</file>
+        <file>six.ssp</file>
+        <file>seven.ssp</file>
+        <file>eight.ssp</file>
+        <file>mine.ssp</file>
+    </qresource>
+</RCC>

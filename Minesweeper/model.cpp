@@ -24,6 +24,31 @@ Model::Model(int width, int height, int numMines, QObject *parent)
     }
 }
 
+/// \brief Model::squareClicked
+/// A square was clicked with the mouse
+/// \param x
+/// \param y
+void Model::squareClicked(int x, int y)
+{
+    if(firstSquare)
+    {
+        setMinefield(x, y, width, height, numMines);
+        firstSquare = false;
+        emit validSquare(0, x, y);
+    }
+    else
+    {
+        if(minefield2dArray[x][y] == 1)
+        {
+            emit invalidSquare(x, y);
+        }
+        else
+        {
+            emit validSquare(getNumSurroundingMines(x, y), x, y);
+        }
+    }
+}
+
 /// \brief Model::setMinefield
 /// Set a minefield.
 /// Logic laws for mine placement.
@@ -65,26 +90,27 @@ void Model::setMinefield(int xCord, int yCord, int width, int height, int numMin
     }
 }
 
-/// \brief Model::squareClicked
-/// A square was clicked with the mouse
+/// \brief Model::getNumSurroundingMines
 /// \param x
 /// \param y
-void Model::squareClicked(int x, int y)
+/// \return
+/// num surrounding mines
+int Model::getNumSurroundingMines(int x, int y)
 {
-    std::cout<<"precheck"<<std::endl;
-    if(firstSquare)
+    int num = 0;
+    for (int i = (x - 1); i <= (x + 1); i++)
     {
-        setMinefield(x, y, width, height, numMines);
-        firstSquare = false;
-        emit validSquare(0, x, y);
-    }
-    else
-    {
-        if(minefield2dArray[x][y] == 1)
+        for (int j = (y - 1); j <= (y + 1); j++)
         {
-            emit invalidSquare(x, y);
+            if ((i >= 0) && (i < width) &&
+                (j >= 0) && (j < height) &&
+                (minefield2dArray[i][j] == 1))
+            {
+                num++;
+            }
         }
     }
+    return num;
 }
 
 

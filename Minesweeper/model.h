@@ -27,6 +27,7 @@ private:
     int width, height, numMines;
 
     void setMinefield(int xCord, int yCord, int width, int height, int numMines);
+    int getNumSurroundingMines(int x, int y);
 
 
 };
