@@ -113,7 +113,6 @@ void MinesweeperWindow::squareClickedSlot(int x, int y)
 /// \param numMines
 void MinesweeperWindow::validSquareSlot(int numMines, int x, int y)
 {
-    std::cout << "check" << std::endl;
     for(int i = 0; i < 32; i++)
     {
         for(int j = 0; j < 32; j++)
@@ -135,7 +134,7 @@ void MinesweeperWindow::invalidSquareSlot(int x, int y)
     {
         for(int j = 0; j < 32; j++)
         {
-            minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, QColor(255,0,0));
+            minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, images[9].pixelColor(QPoint(i,j)));
         }
     }
 

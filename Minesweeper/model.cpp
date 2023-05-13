@@ -20,6 +20,7 @@ Model::Model(int width, int height, int numMines, QObject *parent)
         for(int j = 0; j < height; j++)
         {
             minefield2dArray[i][j] = 0;
+            squaresClicked[i][j] = 0;
         }
     }
 }
@@ -30,21 +31,24 @@ Model::Model(int width, int height, int numMines, QObject *parent)
 /// \param y
 void Model::squareClicked(int x, int y)
 {
-    if(firstSquare)
+    if(squaresClicked[x][y] == 0)
     {
-        setMinefield(x, y, width, height, numMines);
-        firstSquare = false;
-        emit validSquare(0, x, y);
-    }
-    else
-    {
-        if(minefield2dArray[x][y] == 1)
+        if(firstSquare)
         {
-            emit invalidSquare(x, y);
+            firstSquare = false;
+            setMinefield(x, y, width, height, numMines);
+            revealNonMine(x,y);
         }
         else
         {
-            emit validSquare(getNumSurroundingMines(x, y), x, y);
+            if(minefield2dArray[x][y] == 1)
+            {
+                emit invalidSquare(x, y);
+            }
+            else
+            {
+                revealNonMine(x, y);
+            }
         }
     }
 }
@@ -113,5 +117,55 @@ int Model::getNumSurroundingMines(int x, int y)
     return num;
 }
 
+/// \brief ::Model::revealSquare
+/// Emit a signal to reveal squares
+/// \param x
+/// \param y
+void::Model::revealNonMine(int x, int y)
+{
+    paintSquare(getNumSurroundingMines(x,y), x, y);
 
+    if(getNumSurroundingMines(x,y) == 0)
+    {
+        revealZeroSquare(x,y);
+    }
+}
 
+/// \brief Model::revealZeroSquare
+/// Recursively reveal the area around a zero square.
+/// The caller is responsible for ensuring (x,y) is a zero square as it is assumed.
+/// \param x
+/// \param y
+void Model::revealZeroSquare(int x, int y)
+{
+    //Check all nine squares
+    for(int i = (x-1); i <= (x+1); i++)
+    {
+        for(int j = (y-1); j <= (y+1);j++)
+        {
+            //Make sure squares are in range
+            if((i >= 0) && (i <= 29) &&
+                (j >= 0) && (j <= 15))
+            {
+                //Each square must be hidden still.
+                if (squaresClicked[i][j] == 0)
+                {
+                    revealNonMine(i,j);
+                }
+
+            }
+        }
+    }
+}
+
+/// \brief Model::paintSquare
+/// Helper makes sure that painted squares are tracked in squaresClicked and emits a
+/// signal to the window.
+/// \param numSurroundingMines
+/// \param x
+/// \param y
+void Model::paintSquare(int numSurroundingMines, int x, int y)
+{
+    emit validSquare(numSurroundingMines, x, y);
+    squaresClicked[x][y] = 1;
+}
