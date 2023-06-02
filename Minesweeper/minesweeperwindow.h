@@ -28,6 +28,7 @@ public slots:
     void squareClickedSlot(int x, int y);
     void validSquareSlot(int numMines, int x, int y);
     void invalidSquareSlot(int x, int y);
+    void rightCLickSlot(int x, int y);
 
 signals:
     void squareClicked(int x, int y);
@@ -38,6 +39,6 @@ private:
     sspDeserializer deserializer;
     int sizeX, sizeY;
     QImage minefieldImage;
-    array<QImage, 10> images;
+    array<QImage, 11> images;
 };
 #endif // MINESWEEPERWINDOW_H

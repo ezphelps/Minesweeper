@@ -23,6 +23,7 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     connect(this, &MinesweeperWindow::squareClicked, &model, &Model::squareClicked);
     connect(&model, &Model::validSquare, this, &MinesweeperWindow::validSquareSlot);
     connect(&model, &Model::invalidSquare, this, &MinesweeperWindow::invalidSquareSlot);
+    connect(ui->label, &MineField::rightClick, this, &MinesweeperWindow::rightCLickSlot);
 
     //Drawing the minefield.
     minefieldImage.fill(QColor(180, 180, 180));
@@ -79,16 +80,19 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
 
     ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
 
-    images[0] = deserializer.deserializeSSP(":/squareImages/zero.ssp");
-    images[1] = deserializer.deserializeSSP(":/squareImages/one.ssp");
-    images[2] = deserializer.deserializeSSP(":/squareImages/two.ssp");
-    images[3] = deserializer.deserializeSSP(":/squareImages/three.ssp");
-    images[4] = deserializer.deserializeSSP(":/squareImages/four.ssp");
-    images[5] = deserializer.deserializeSSP(":/squareImages/five.ssp");
-    images[6] = deserializer.deserializeSSP(":/squareImages/six.ssp");
-    images[7] = deserializer.deserializeSSP(":/squareImages/seven.ssp");
-    images[8] = deserializer.deserializeSSP(":/squareImages/eight.ssp");
-    images[9] = deserializer.deserializeSSP(":/squareImages/mine.ssp");
+    images[0] =  deserializer.deserializeSSP(":/squareImages/zero.ssp");
+    images[1] =  deserializer.deserializeSSP(":/squareImages/one.ssp");
+    images[2] =  deserializer.deserializeSSP(":/squareImages/two.ssp");
+    images[3] =  deserializer.deserializeSSP(":/squareImages/three.ssp");
+    images[4] =  deserializer.deserializeSSP(":/squareImages/four.ssp");
+    images[5] =  deserializer.deserializeSSP(":/squareImages/five.ssp");
+    images[6] =  deserializer.deserializeSSP(":/squareImages/six.ssp");
+    images[7] =  deserializer.deserializeSSP(":/squareImages/seven.ssp");
+    images[8] =  deserializer.deserializeSSP(":/squareImages/eight.ssp");
+    images[9] =  deserializer.deserializeSSP(":/squareImages/mine.ssp");
+    images[10] = deserializer.deserializeSSP(":/squareImages/flag.ssp");
+
+    ui->label->setFocus();
 }
 
 
@@ -122,6 +126,7 @@ void MinesweeperWindow::validSquareSlot(int numMines, int x, int y)
     }
 
     ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
+    ui->label->setFocus();
 }
 
 /// \brief MinesweeperWindow::invalidSquareSlot
@@ -139,4 +144,22 @@ void MinesweeperWindow::invalidSquareSlot(int x, int y)
     }
 
     ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
+    ui->label->setFocus();
+}
+
+void MinesweeperWindow::rightCLickSlot(int x, int y)
+{
+    x = x/32;
+    y = y/32;
+
+    for(int i = 0; i < 32; i++)
+    {
+        for(int j = 0; j < 32; j++)
+        {
+            minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, images[10].pixelColor(QPoint(i,j)));
+        }
+    }
+
+    ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
+    ui->label->setFocus();
 }

@@ -8,6 +8,8 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QEvent>
+#include <QCursor>
+
 
 class MineField : public QLabel
 {
@@ -17,12 +19,14 @@ public:
 
 signals:
     void mousePressed(int x, int y);
+    void rightClick(int x, int y_);
 
 protected:
-    bool event(QEvent *event);
+    bool event(QEvent *event) override;
 
 private:
     bool mouseIsDragging;
+    int mouseX, mouseY;
 
 };
 
