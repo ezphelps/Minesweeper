@@ -19,14 +19,18 @@ public:
     explicit Model(int width, int height, int numMines, QObject *parent = nullptr);
 public slots:
     void squareClicked(int x, int y);
+    void rightClicked(int x, int y);
 
 signals:
     void validSquare(int numMines, int x, int y);
     void invalidSquare(int x, int y);
+    void displayFlag(int x, int y);
+    void removeFlag(int x, int y);
 
 private:
     array<array<int, 16>, 30> minefield2dArray;
     array<array<int, 16>, 30> squaresClicked;
+    array<array<int, 16>, 30> flagsArray;
     bool firstSquare;
     int width, height, numMines;
 

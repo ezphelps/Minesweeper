@@ -29,9 +29,12 @@ public slots:
     void validSquareSlot(int numMines, int x, int y);
     void invalidSquareSlot(int x, int y);
     void rightCLickSlot(int x, int y);
+    void displayFlagSlot(int x, int y);
+    void removeFlagSlot(int x, int y);
 
 signals:
     void squareClicked(int x, int y);
+    void rightClicked(int x, int y);
     void getSquareImage(QString);
 private:
     Ui::MinesweeperWindow *ui;
@@ -40,5 +43,8 @@ private:
     int sizeX, sizeY;
     QImage minefieldImage;
     array<QImage, 11> images;
+
+    void shadeSquare(int i, int j);
+    void updateMinefield();
 };
 #endif // MINESWEEPERWINDOW_H

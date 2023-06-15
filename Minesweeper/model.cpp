@@ -21,6 +21,7 @@ Model::Model(int width, int height, int numMines, QObject *parent)
         {
             minefield2dArray[i][j] = 0;
             squaresClicked[i][j] = 0;
+            flagsArray[i][j] = 0;
         }
     }
 }
@@ -53,6 +54,25 @@ void Model::squareClicked(int x, int y)
     }
 }
 
+/// \brief Model::rightClicked
+/// Checks if a flag is already at the location of a right click.
+/// Emits a signal to tell the view what to do.
+/// \param x
+/// \param y
+void Model::rightClicked(int x, int y)
+{
+    if(flagsArray[x][y] == 0)
+    {
+        flagsArray[x][y] = 1;
+        emit displayFlag(x, y);
+    }
+    else
+    {
+        flagsArray[x][y] = 0;
+        emit removeFlag(x, y);
+    }
+}
+
 /// \brief Model::setMinefield
 /// Set a minefield.
 /// Logic laws for mine placement.
@@ -78,18 +98,6 @@ void Model::setMinefield(int xCord, int yCord, int width, int height, int numMin
         else
         {
             minefield2dArray[x][y] = 1;
-        }
-    }
-
-    //Print out minefield in console.
-    for(int i = 0;i < height; i++)
-    {
-        for(int j = 0; j < width; j++)
-        {
-            if(j != 29)
-                std::cout<<minefield2dArray[j][i] << "  ";
-            else
-                std::cout<<minefield2dArray[j][i] << std::endl;
         }
     }
 }
@@ -152,7 +160,6 @@ void Model::revealZeroSquare(int x, int y)
                 {
                     revealNonMine(i,j);
                 }
-
             }
         }
     }
@@ -169,3 +176,5 @@ void Model::paintSquare(int numSurroundingMines, int x, int y)
     emit validSquare(numSurroundingMines, x, y);
     squaresClicked[x][y] = 1;
 }
+
+
