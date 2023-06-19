@@ -10,20 +10,23 @@
 Model::Model(int width, int height, int numMines, QObject *parent)
     : QObject{parent},
       firstSquare(true),
+      gameOver(false),
       width(width),
       height(height),
       numMines(numMines)
 {
-    //Set minefield to be empty
-    for(int i = 0;i < width; i++)
-    {
-        for(int j = 0; j < height; j++)
-        {
-            minefield2dArray[i][j] = 0;
-            squaresClicked[i][j] = 0;
-            flagsArray[i][j] = 0;
-        }
-    }
+    resetArrays();
+}
+
+/// \brief Model::restartButton
+///
+void Model::restartButton()
+{
+    resetArrays();
+    firstSquare = true;
+    gameOver = false;
+
+    emit resetMinefield(numMines);
 }
 
 /// \brief Model::squareClicked
@@ -32,6 +35,11 @@ Model::Model(int width, int height, int numMines, QObject *parent)
 /// \param y
 void Model::squareClicked(int x, int y)
 {
+    if(gameOver)
+    {
+        return;
+    }
+
     if(squaresClicked[x][y] == 0)
     {
         if(firstSquare)
@@ -42,9 +50,21 @@ void Model::squareClicked(int x, int y)
         }
         else
         {
-            if(minefield2dArray[x][y] == 1)
+            if(minefield2dArray[x][y] == 1)  //hit mine
             {
-                emit invalidSquare(x, y);
+                gameOver = true;
+
+                //reveal all mines
+                for(int i = 0; i < width; i++)
+                {
+                    for(int j = 0; j < height; j++)
+                    {
+                        if(minefield2dArray[i][j] == 1 && flagsArray[i][j] != 1)
+                        {
+                            emit invalidSquare(i, j);
+                        }
+                    }
+                }
             }
             else
             {
@@ -177,4 +197,16 @@ void Model::paintSquare(int numSurroundingMines, int x, int y)
     squaresClicked[x][y] = 1;
 }
 
-
+/// \brief Model::resetArrays
+void Model::resetArrays()
+{
+    for(int i = 0;i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            minefield2dArray[i][j] = 0;
+            squaresClicked[i][j] = 0;
+            flagsArray[i][j] = 0;
+        }
+    }
+}

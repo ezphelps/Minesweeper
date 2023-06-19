@@ -19,17 +19,24 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    //button
+    connect(ui->restartButton, &QPushButton::released, this, &MinesweeperWindow::restartButtonSlot);
+    connect(this, &MinesweeperWindow::restartButton, &model, &Model::restartButton);
+    connect(&model, &Model::resetMinefield, this, &MinesweeperWindow::resetMinefieldSlot);
+
+    //left click
     connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::squareClickedSlot);
     connect(this, &MinesweeperWindow::squareClicked, &model, &Model::squareClicked);
     connect(&model, &Model::validSquare, this, &MinesweeperWindow::validSquareSlot);
     connect(&model, &Model::invalidSquare, this, &MinesweeperWindow::invalidSquareSlot);
+
+    //right click
     connect(ui->label, &MineField::rightClick, this, &MinesweeperWindow::rightCLickSlot);
     connect(this, &MinesweeperWindow::rightClicked, &model, &Model::rightClicked);
     connect(&model, &Model::displayFlag, this, &MinesweeperWindow::displayFlagSlot);
     connect(&model, &Model::removeFlag, this, &MinesweeperWindow::removeFlagSlot);
 
     //Drawing the minefield.
-    minefieldImage.fill(QColor(180, 180, 180));
     for(int i = 0; i < sizeX; i++) // Rows of squares
     {
         for(int j = 0; j < sizeY; j++) // Collumns of squares
@@ -63,6 +70,28 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
 MinesweeperWindow::~MinesweeperWindow()
 {
     delete ui;
+}
+
+/// \brief MinesweeperWindow::restartButtonSlot
+/// Translates a button click to a signal for the model.
+void MinesweeperWindow::restartButtonSlot()
+{
+    emit restartButton();
+}
+
+/// \brief MinesweeperWindow::resetMinefieldSlot
+/// \param numMines
+void MinesweeperWindow::resetMinefieldSlot(int numMines)
+{
+    for(int i = 0; i < sizeX; i ++)
+    {
+        for(int j = 0; j < sizeY; j++)
+        {
+            shadeSquare(i, j);
+        }
+    }
+
+    updateMinefield();
 }
 
 /// \brief MinesweeperWindow::squareClickedSlot

@@ -25,6 +25,8 @@ public:
     ~MinesweeperWindow();
 
 public slots:
+    void restartButtonSlot();
+    void resetMinefieldSlot(int numMines);
     void squareClickedSlot(int x, int y);
     void validSquareSlot(int numMines, int x, int y);
     void invalidSquareSlot(int x, int y);
@@ -33,9 +35,11 @@ public slots:
     void removeFlagSlot(int x, int y);
 
 signals:
+    void restartButton();
     void squareClicked(int x, int y);
     void rightClicked(int x, int y);
     void getSquareImage(QString);
+
 private:
     Ui::MinesweeperWindow *ui;
     Model model;
