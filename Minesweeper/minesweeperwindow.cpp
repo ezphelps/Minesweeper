@@ -24,8 +24,11 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     connect(this, &MinesweeperWindow::restartButton, &model, &Model::restartButton);
     connect(&model, &Model::resetMinefield, this, &MinesweeperWindow::resetMinefieldSlot);
 
+    //mouse press
+    connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::mousePressedSlot);
+
     //left click
-    connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::squareClickedSlot);
+    connect(ui->label, &MineField::mouseRelease, this, &MinesweeperWindow::squareClickedSlot);
     connect(this, &MinesweeperWindow::squareClicked, &model, &Model::squareClicked);
     connect(&model, &Model::validSquare, this, &MinesweeperWindow::validSquareSlot);
     connect(&model, &Model::invalidSquare, this, &MinesweeperWindow::invalidSquareSlot);
@@ -61,6 +64,13 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     images[9] =  deserializer.deserializeSSP(":/squareImages/mine.ssp");
     images[10] = deserializer.deserializeSSP(":/squareImages/flag.ssp");
 
+    buttonImages[0] = deserializer.deserializeSSP(":/squareImages/smileyFace.ssp");
+    buttonImages[1] = deserializer.deserializeSSP(":/squareImages/ohFace.ssp");
+    buttonImages[2] = deserializer.deserializeSSP(":/squareImages/deathFace.ssp");
+
+    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[0])));
+    ui->restartButton->setIconSize(buttonImages[0].size());
+
     updateMinefield();
 }
 
@@ -91,7 +101,19 @@ void MinesweeperWindow::resetMinefieldSlot(int numMines)
         }
     }
 
+    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[0])));
+    ui->restartButton->setIconSize(buttonImages[0].size());
+
     updateMinefield();
+}
+
+/// \brief MinesweeperWindow::mousePressedSlot
+/// \param x
+/// \param y
+void MinesweeperWindow::mousePressedSlot(int x, int y)
+{
+    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[1])));
+    ui->restartButton->setIconSize(buttonImages[1].size());
 }
 
 /// \brief MinesweeperWindow::squareClickedSlot
@@ -116,6 +138,9 @@ void MinesweeperWindow::validSquareSlot(int numMines, int x, int y)
         }
     }
 
+    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[0])));
+    ui->restartButton->setIconSize(buttonImages[0].size());
+
     updateMinefield();
 }
 
@@ -132,6 +157,9 @@ void MinesweeperWindow::invalidSquareSlot(int x, int y)
             minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, images[9].pixelColor(QPoint(i,j)));
         }
     }
+
+    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[2])));
+    ui->restartButton->setIconSize(buttonImages[2].size());
 
     updateMinefield();
 }

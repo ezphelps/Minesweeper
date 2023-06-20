@@ -44,8 +44,6 @@ private:
     void revealZeroSquare(int x, int y);
     void paintSquare(int numSurroundingMines, int x, int y);
     void resetArrays();
-
-
 };
 
 #endif // MODEL_H

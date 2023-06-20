@@ -19,6 +19,7 @@ public:
 
 signals:
     void mousePressed(int x, int y);
+    void mouseRelease(int x, int y);
     void rightClick(int x, int y_);
 
 protected:

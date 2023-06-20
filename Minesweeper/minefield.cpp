@@ -34,11 +34,22 @@ bool MineField::event(QEvent *event)
         }
         else
         {
-            emit mousePressed(point.x(), point.y());
+            emit mouseRelease(point.x(), point.y());
 
             return true;
         }
-    }  
+    }
+    else if(event->type() == QEvent::MouseButtonPress)
+    {
+        QMouseEvent* mEvent = (QMouseEvent*)event;
+        QPoint point = mEvent->pos();
+
+        if(mEvent->button() != Qt::RightButton)
+        {
+            emit mousePressed(point.x(), point.y());
+            return true;
+        }
+    }
     /*else if(event->type() == QEvent::KeyPress)
     {
         QKeyEvent* key = static_cast<QKeyEvent*>(event);

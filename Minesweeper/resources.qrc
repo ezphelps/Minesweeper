@@ -11,5 +11,8 @@
         <file>mine.ssp</file>
         <file>zero.ssp</file>
         <file>flag.ssp</file>
+        <file>smileyFace.ssp</file>
+        <file>ohFace.ssp</file>
+        <file>deathFace.ssp</file>
     </qresource>
 </RCC>

@@ -6,6 +6,8 @@
 
 #include <QMainWindow>
 #include <QImage>
+#include <QPixmap>
+#include <QIcon>
 
 #include <model.h>
 #include "sspdeserializer.h"
@@ -27,6 +29,7 @@ public:
 public slots:
     void restartButtonSlot();
     void resetMinefieldSlot(int numMines);
+    void mousePressedSlot(int x, int y);
     void squareClickedSlot(int x, int y);
     void validSquareSlot(int numMines, int x, int y);
     void invalidSquareSlot(int x, int y);
@@ -47,6 +50,7 @@ private:
     int sizeX, sizeY;
     QImage minefieldImage;
     array<QImage, 11> images;
+    array<QImage, 3> buttonImages;
 
     void shadeSquare(int i, int j);
     void updateMinefield();
