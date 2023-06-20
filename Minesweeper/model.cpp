@@ -11,6 +11,9 @@ Model::Model(int width, int height, int numMines, QObject *parent)
     : QObject{parent},
       firstSquare(true),
       gameOver(false),
+      mouseDragging(false),
+      mouseX(0),
+      mouseY(0),
       width(width),
       height(height),
       numMines(numMines)
@@ -19,7 +22,6 @@ Model::Model(int width, int height, int numMines, QObject *parent)
 }
 
 /// \brief Model::restartButton
-///
 void Model::restartButton()
 {
     resetArrays();
@@ -29,12 +31,45 @@ void Model::restartButton()
     emit resetMinefield(numMines);
 }
 
+void Model::mouseDrag(int x, int y)
+{
+    std::cout << "check2" << std::endl;
+    if(!mouseDragging)
+    {
+        mouseDragging = true;
+        mouseX = x;
+        mouseY = y;
+
+        if(squaresClicked[x][y] == 0)
+        {
+            emit selectSquare(mouseX, mouseY);
+        }
+    }
+    else if(mouseX != x || mouseY != y)
+    {
+        if(squaresClicked[mouseX][mouseY] == 0)
+        {
+            emit unselectSquare(mouseX, mouseY);
+        }
+
+        if(squaresClicked[x][y] == 0)
+        {
+            mouseX = x;
+            mouseY = y;
+
+            emit selectSquare(mouseX, mouseY);
+        }
+    }
+}
+
 /// \brief Model::squareClicked
 /// A square was clicked with the mouse
 /// \param x
 /// \param y
 void Model::squareClicked(int x, int y)
 {
+    mouseDragging = false;
+
     if(gameOver)
     {
         return;

@@ -19,11 +19,14 @@ public:
     explicit Model(int width, int height, int numMines, QObject *parent = nullptr);
 public slots:
     void restartButton();
+    void mouseDrag(int x, int y);
     void squareClicked(int x, int y);
     void rightClicked(int x, int y);
 
 signals:
     void resetMinefield(int numMines);
+    void selectSquare(int x, int y);
+    void unselectSquare(int x, int y);
     void validSquare(int numMines, int x, int y);
     void invalidSquare(int x, int y);
     void displayFlag(int x, int y);
@@ -36,6 +39,8 @@ private:
 
     bool firstSquare;
     bool gameOver;
+    bool mouseDragging;
+    int mouseX, mouseY;
     int width, height, numMines;
 
     void setMinefield(int xCord, int yCord, int width, int height, int numMines);

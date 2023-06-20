@@ -26,6 +26,10 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
 
     //mouse press
     connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::mousePressedSlot);
+    connect(this, &MinesweeperWindow::mouseDrag, &model, &Model::mouseDrag);
+    connect(&model, &Model::selectSquare, this, &MinesweeperWindow::selectSquareSlot);
+    connect(&model, &Model::unselectSquare, this, &MinesweeperWindow::unselectSquareSlot);
+
 
     //left click
     connect(ui->label, &MineField::mouseRelease, this, &MinesweeperWindow::squareClickedSlot);
@@ -112,8 +116,45 @@ void MinesweeperWindow::resetMinefieldSlot(int numMines)
 /// \param y
 void MinesweeperWindow::mousePressedSlot(int x, int y)
 {
+    //ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[1])));
+    //ui->restartButton->setIconSize(buttonImages[1].size());
+
+    emit mouseDrag(x/32, y/32);
+}
+
+/// \brief MinesweeperWindow::showSelectedSquareSlot
+/// Colors a square as flat.
+/// \param x
+/// \param y
+void MinesweeperWindow::selectSquareSlot(int x, int y)
+{
+    QColor color = QColor(180, 180, 180);
+    for(int i = 0; i < 32; i++)
+    {
+        for(int j = 0; j < 32; j++)
+        {
+            minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, color);
+        }
+    }
+
     ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[1])));
     ui->restartButton->setIconSize(buttonImages[1].size());
+
+    updateMinefield();
+}
+
+/// \brief MinesweeperWindow::unselectSquareSlot
+/// Recieves signal from model.
+/// \param x
+/// \param y
+void MinesweeperWindow::unselectSquareSlot(int x, int y)
+{
+    shadeSquare(x, y);
+
+    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[0])));
+    ui->restartButton->setIconSize(buttonImages[0].size());
+
+    updateMinefield();
 }
 
 /// \brief MinesweeperWindow::squareClickedSlot
