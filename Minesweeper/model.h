@@ -47,7 +47,6 @@ private:
     int getNumSurroundingMines(int x, int y);
     void revealNonMine(int x, int y);
     void revealZeroSquare(int x, int y);
-    void paintSquare(int numSurroundingMines, int x, int y);
     void resetArrays();
 };
 

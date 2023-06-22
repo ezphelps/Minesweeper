@@ -29,8 +29,8 @@ public:
 public slots:
     void restartButtonSlot();
     void resetMinefieldSlot(int numMines);
-    void mousePressedSlot(int x, int y);
-    void selectSquareSlot(int x, int y);
+    void mouseDraggingSlot(int x, int y);
+    void showSelectedSquareSlot(int x, int y);
     void unselectSquareSlot(int x, int y);
     void squareClickedSlot(int x, int y);
     void validSquareSlot(int numMines, int x, int y);

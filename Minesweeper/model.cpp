@@ -31,9 +31,13 @@ void Model::restartButton()
     emit resetMinefield(numMines);
 }
 
+/// \brief Model::mouseDrag
+/// Logic to show the square currently being selected.
+/// \param x
+/// \param y
 void Model::mouseDrag(int x, int y)
 {
-    std::cout << "check2" << std::endl;
+    //The mouse drag just started.
     if(!mouseDragging)
     {
         mouseDragging = true;
@@ -45,13 +49,16 @@ void Model::mouseDrag(int x, int y)
             emit selectSquare(mouseX, mouseY);
         }
     }
+    //The mouse drag is already going.  Do something if its in a new square.
     else if(mouseX != x || mouseY != y)
     {
+        //Unselect a square if it hasn't been revealed already.
         if(squaresClicked[mouseX][mouseY] == 0)
         {
             emit unselectSquare(mouseX, mouseY);
         }
 
+        //Select the new square if that one hasn't been revealed.
         if(squaresClicked[x][y] == 0)
         {
             mouseX = x;
@@ -63,18 +70,19 @@ void Model::mouseDrag(int x, int y)
 }
 
 /// \brief Model::squareClicked
-/// A square was clicked with the mouse
+/// The mouse was released over this square.
 /// \param x
 /// \param y
 void Model::squareClicked(int x, int y)
 {
-    mouseDragging = false;
-
     if(gameOver)
     {
         return;
     }
 
+    mouseDragging = false;
+
+    //Check if the square has been revealed yet.
     if(squaresClicked[x][y] == 0)
     {
         if(firstSquare)
@@ -85,7 +93,8 @@ void Model::squareClicked(int x, int y)
         }
         else
         {
-            if(minefield2dArray[x][y] == 1)  //hit mine
+            //User hit a mine.
+            if(minefield2dArray[x][y] == 1)
             {
                 gameOver = true;
 
@@ -101,6 +110,7 @@ void Model::squareClicked(int x, int y)
                     }
                 }
             }
+            //User did not hit a mine.
             else
             {
                 revealNonMine(x, y);
@@ -116,11 +126,13 @@ void Model::squareClicked(int x, int y)
 /// \param y
 void Model::rightClicked(int x, int y)
 {
+    //Display flag.
     if(flagsArray[x][y] == 0)
     {
         flagsArray[x][y] = 1;
         emit displayFlag(x, y);
     }
+    //Remove the flag.
     else
     {
         flagsArray[x][y] = 0;
@@ -142,14 +154,17 @@ void Model::setMinefield(int xCord, int yCord, int width, int height, int numMin
         int x = std::rand() % width;
         int y = std::rand() % height;
 
+        //If there is already a mine don't increment.
         if(minefield2dArray[x][y] == 1)
         {
             i--;
         }
+        //Mine also cannot be placed around the square the user clicked.
         else if((x >= (xCord - 1) && (x <= (xCord + 1))) && (y >= (yCord - 1) && y <= (yCord + 1)))
         {
             i--;
         }
+        //Place the mine.
         else
         {
             minefield2dArray[x][y] = 1;
@@ -169,6 +184,7 @@ int Model::getNumSurroundingMines(int x, int y)
     {
         for (int j = (y - 1); j <= (y + 1); j++)
         {
+            //Bounds check as well as looking for mines.
             if ((i >= 0) && (i < width) &&
                 (j >= 0) && (j < height) &&
                 (minefield2dArray[i][j] == 1))
@@ -181,13 +197,16 @@ int Model::getNumSurroundingMines(int x, int y)
 }
 
 /// \brief ::Model::revealSquare
-/// Emit a signal to reveal squares
+/// Emit a signal to reveal squares.
+/// Driver method if a zero square is clicked.
 /// \param x
 /// \param y
 void::Model::revealNonMine(int x, int y)
 {
-    paintSquare(getNumSurroundingMines(x,y), x, y);
+    emit validSquare(getNumSurroundingMines(x,y), x, y);
+    squaresClicked[x][y] = 1;
 
+    //Recursive call.
     if(getNumSurroundingMines(x,y) == 0)
     {
         revealZeroSquare(x,y);
@@ -196,12 +215,12 @@ void::Model::revealNonMine(int x, int y)
 
 /// \brief Model::revealZeroSquare
 /// Recursively reveal the area around a zero square.
-/// The caller is responsible for ensuring (x,y) is a zero square as it is assumed.
+/// The calling method is responsible for ensuring (x,y) is a zero square as it is assumed.
 /// \param x
 /// \param y
 void Model::revealZeroSquare(int x, int y)
 {
-    //Check all nine squares
+    //Check all surrounding nine squares
     for(int i = (x-1); i <= (x+1); i++)
     {
         for(int j = (y-1); j <= (y+1);j++)
@@ -210,7 +229,8 @@ void Model::revealZeroSquare(int x, int y)
             if((i >= 0) && (i <= 29) &&
                 (j >= 0) && (j <= 15))
             {
-                //Each square must be hidden still.
+                //Each square being revealed must be hidden still.
+                //Base case will be all surrounding squares are revealed.
                 if (squaresClicked[i][j] == 0)
                 {
                     revealNonMine(i,j);
@@ -218,18 +238,6 @@ void Model::revealZeroSquare(int x, int y)
             }
         }
     }
-}
-
-/// \brief Model::paintSquare
-/// Helper makes sure that painted squares are tracked in squaresClicked and emits a
-/// signal to the window.
-/// \param numSurroundingMines
-/// \param x
-/// \param y
-void Model::paintSquare(int numSurroundingMines, int x, int y)
-{
-    emit validSquare(numSurroundingMines, x, y);
-    squaresClicked[x][y] = 1;
 }
 
 /// \brief Model::resetArrays

@@ -25,9 +25,9 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     connect(&model, &Model::resetMinefield, this, &MinesweeperWindow::resetMinefieldSlot);
 
     //mouse press
-    connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::mousePressedSlot);
+    connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::mouseDraggingSlot);
     connect(this, &MinesweeperWindow::mouseDrag, &model, &Model::mouseDrag);
-    connect(&model, &Model::selectSquare, this, &MinesweeperWindow::selectSquareSlot);
+    connect(&model, &Model::selectSquare, this, &MinesweeperWindow::showSelectedSquareSlot);
     connect(&model, &Model::unselectSquare, this, &MinesweeperWindow::unselectSquareSlot);
 
 
@@ -87,13 +87,15 @@ MinesweeperWindow::~MinesweeperWindow()
 }
 
 /// \brief MinesweeperWindow::restartButtonSlot
-/// Translates a button click to a signal for the model.
+/// Gets signal from button.  Emits one for model.
 void MinesweeperWindow::restartButtonSlot()
 {
     emit restartButton();
 }
 
 /// \brief MinesweeperWindow::resetMinefieldSlot
+/// Gets signal from model.
+/// Shades all squares and changes face on button
 /// \param numMines
 void MinesweeperWindow::resetMinefieldSlot(int numMines)
 {
@@ -111,22 +113,21 @@ void MinesweeperWindow::resetMinefieldSlot(int numMines)
     updateMinefield();
 }
 
-/// \brief MinesweeperWindow::mousePressedSlot
+/// \brief MinesweeperWindow::mouseDraggingSLot
+/// Gets signal from minefield.
 /// \param x
 /// \param y
-void MinesweeperWindow::mousePressedSlot(int x, int y)
+void MinesweeperWindow::mouseDraggingSlot(int x, int y)
 {
-    //ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[1])));
-    //ui->restartButton->setIconSize(buttonImages[1].size());
-
     emit mouseDrag(x/32, y/32);
 }
 
 /// \brief MinesweeperWindow::showSelectedSquareSlot
-/// Colors a square as flat.
+/// Gets signal from model.
+/// Colors a square as flat and updates button face.
 /// \param x
 /// \param y
-void MinesweeperWindow::selectSquareSlot(int x, int y)
+void MinesweeperWindow::showSelectedSquareSlot(int x, int y)
 {
     QColor color = QColor(180, 180, 180);
     for(int i = 0; i < 32; i++)
@@ -144,7 +145,8 @@ void MinesweeperWindow::selectSquareSlot(int x, int y)
 }
 
 /// \brief MinesweeperWindow::unselectSquareSlot
-/// Recieves signal from model.
+/// Gets signal from model.
+/// Shades a square that was previously selected and updates button face.
 /// \param x
 /// \param y
 void MinesweeperWindow::unselectSquareSlot(int x, int y)
@@ -158,7 +160,7 @@ void MinesweeperWindow::unselectSquareSlot(int x, int y)
 }
 
 /// \brief MinesweeperWindow::squareClickedSlot
-/// Recieves a mouse click signal from the minefield label.
+/// Gets signal from minefield.
 /// \param x
 /// \param y
 void MinesweeperWindow::squareClickedSlot(int x, int y)
@@ -167,7 +169,8 @@ void MinesweeperWindow::squareClickedSlot(int x, int y)
 }
 
 /// \brief MinesweeperWindow::validSquareSlot
-/// Changes a square.
+/// Gets signal from the model.
+/// Draws a revealed square.
 /// \param numMines
 void MinesweeperWindow::validSquareSlot(int numMines, int x, int y)
 {
@@ -186,6 +189,7 @@ void MinesweeperWindow::validSquareSlot(int numMines, int x, int y)
 }
 
 /// \brief MinesweeperWindow::invalidSquareSlot
+/// Gets signal from the model.
 /// The user clicked on a mine.
 /// \param x
 /// \param y
@@ -206,7 +210,7 @@ void MinesweeperWindow::invalidSquareSlot(int x, int y)
 }
 
 /// \brief MinesweeperWindow::rightCLickSlot
-/// Recieves a right click signal from the minefield label.
+/// Gets signal from minefield.  Sends one to the model.
 /// \param x
 /// \param y
 void MinesweeperWindow::rightCLickSlot(int x, int y)
@@ -215,6 +219,7 @@ void MinesweeperWindow::rightCLickSlot(int x, int y)
 }
 
 /// \brief MinesweeperWindow::displayFlagSlot
+/// Gets signal from the model.
 /// \param x
 /// \param y
 void MinesweeperWindow::displayFlagSlot(int x, int y)
@@ -231,6 +236,7 @@ void MinesweeperWindow::displayFlagSlot(int x, int y)
 }
 
 /// \brief MinesweeperWindow::removeFlagSlot
+/// Gets signal from the model.
 /// \param x
 /// \param y
 void MinesweeperWindow::removeFlagSlot(int x, int y)
@@ -241,7 +247,8 @@ void MinesweeperWindow::removeFlagSlot(int x, int y)
 }
 
 /// \brief MinesweeperWindow::shadeSquare
-/// Helper method to clean up readablility.  i is x.  j is y.
+/// Helper method to clean up readablility.  Draws a shaded square.
+/// i is x-coordinate.  j is y-coordinate.
 /// \param i
 /// \param j
 void MinesweeperWindow::shadeSquare(int i, int j)
@@ -293,6 +300,7 @@ void MinesweeperWindow::shadeSquare(int i, int j)
 }
 
 /// \brief MinesweeperWindow::updateMinefield
+/// Called when the minefield needs to be redrawn.  Mostly at the end of other methods.
 void MinesweeperWindow::updateMinefield()
 {
     ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
