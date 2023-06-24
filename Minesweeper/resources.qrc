@@ -14,5 +14,6 @@
         <file>smileyFace.ssp</file>
         <file>ohFace.ssp</file>
         <file>deathFace.ssp</file>
+        <file>shadesFace.ssp</file>
     </qresource>
 </RCC>

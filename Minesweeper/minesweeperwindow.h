@@ -36,14 +36,18 @@ public slots:
     void validSquareSlot(int numMines, int x, int y);
     void invalidSquareSlot(int x, int y);
     void rightCLickSlot(int x, int y);
+    void spaceHitSlot(int x, int y);
     void displayFlagSlot(int x, int y);
     void removeFlagSlot(int x, int y);
+    void playerWinsSlot();
 
 signals:
+    void setWindowPtr(MinesweeperWindow*);
     void restartButton();
     void mouseDrag(int x, int y);
     void squareClicked(int x, int y);
     void rightClicked(int x, int y);
+    void spaceHit(int x, int y);
     void getSquareImage(QString);
 
 private:
@@ -53,7 +57,7 @@ private:
     int sizeX, sizeY;
     QImage minefieldImage;
     array<QImage, 11> images;
-    array<QImage, 3> buttonImages;
+    array<QImage, 4> buttonImages;
 
     void shadeSquare(int i, int j);
     void updateMinefield();

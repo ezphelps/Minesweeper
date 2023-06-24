@@ -9,6 +9,8 @@
 #include <QKeyEvent>
 #include <QEvent>
 #include <QCursor>
+#include <QRect>
+#include "minesweeperwindow.h"
 
 
 class MineField : public QLabel
@@ -17,15 +19,20 @@ class MineField : public QLabel
 public:
     explicit MineField(QWidget *parent = nullptr);
 
+public slots:
+    void setPtr(MinesweeperWindow *ptr);
+
 signals:
     void mousePressed(int x, int y);
     void mouseRelease(int x, int y);
-    void rightClick(int x, int y_);
+    void rightClick(int x, int y);
+    void spaceHit(int x, int y);
 
 protected:
     bool event(QEvent *event) override;
 
 private:
+    MinesweeperWindow *windowPtr;
     bool mouseIsDragging;
     int mouseX, mouseY;
 

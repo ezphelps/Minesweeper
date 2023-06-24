@@ -19,6 +19,10 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    //Set pointer to this
+    connect(this, &MinesweeperWindow::setWindowPtr, ui->label, &MineField::setPtr);
+    emit setWindowPtr(this);
+
     //button
     connect(ui->restartButton, &QPushButton::released, this, &MinesweeperWindow::restartButtonSlot);
     connect(this, &MinesweeperWindow::restartButton, &model, &Model::restartButton);
@@ -42,6 +46,13 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     connect(this, &MinesweeperWindow::rightClicked, &model, &Model::rightClicked);
     connect(&model, &Model::displayFlag, this, &MinesweeperWindow::displayFlagSlot);
     connect(&model, &Model::removeFlag, this, &MinesweeperWindow::removeFlagSlot);
+
+    //space bar
+    connect(ui->label, &MineField::spaceHit, this, &MinesweeperWindow::spaceHitSlot);
+    connect(this, &MinesweeperWindow::spaceHit, &model, &Model::spaceHit);
+
+    //win
+    connect(&model, &Model::playerWins, this, &MinesweeperWindow::playerWinsSlot);
 
     //Drawing the minefield.
     for(int i = 0; i < sizeX; i++) // Rows of squares
@@ -71,6 +82,7 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     buttonImages[0] = deserializer.deserializeSSP(":/squareImages/smileyFace.ssp");
     buttonImages[1] = deserializer.deserializeSSP(":/squareImages/ohFace.ssp");
     buttonImages[2] = deserializer.deserializeSSP(":/squareImages/deathFace.ssp");
+    buttonImages[3] = deserializer.deserializeSSP(":/squareImages/shadesFace.ssp");
 
     ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[0])));
     ui->restartButton->setIconSize(buttonImages[0].size());
@@ -218,6 +230,15 @@ void MinesweeperWindow::rightCLickSlot(int x, int y)
     emit rightClicked(x/32, y/32);
 }
 
+/// \brief MinesweeperWindow::spaceHitSlot
+/// Emits signal to the model.
+/// \param x
+/// \param y
+void MinesweeperWindow::spaceHitSlot(int x, int y)
+{
+    emit spaceHit(x / 32, y / 32);
+}
+
 /// \brief MinesweeperWindow::displayFlagSlot
 /// Gets signal from the model.
 /// \param x
@@ -242,6 +263,16 @@ void MinesweeperWindow::displayFlagSlot(int x, int y)
 void MinesweeperWindow::removeFlagSlot(int x, int y)
 {
     shadeSquare(x, y);
+
+    updateMinefield();
+}
+
+/// \brief MinesweeperWindow::playerWinsSlot
+/// Updates the smiley face for a win.
+void MinesweeperWindow::playerWinsSlot()
+{
+    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[0])));
+    ui->restartButton->setIconSize(buttonImages[0].size());
 
     updateMinefield();
 }

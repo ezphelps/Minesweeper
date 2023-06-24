@@ -22,6 +22,7 @@ public slots:
     void mouseDrag(int x, int y);
     void squareClicked(int x, int y);
     void rightClicked(int x, int y);
+    void spaceHit(int x, int y);
 
 signals:
     void resetMinefield(int numMines);
@@ -31,6 +32,7 @@ signals:
     void invalidSquare(int x, int y);
     void displayFlag(int x, int y);
     void removeFlag(int x, int y);
+    void playerWins();
 
 private:
     array<array<int, 16>, 30> minefield2dArray;
@@ -42,6 +44,7 @@ private:
     bool mouseDragging;
     int mouseX, mouseY;
     int width, height, numMines;
+    int squaresLeft;
 
     void setMinefield(int xCord, int yCord, int width, int height, int numMines);
     int getNumSurroundingMines(int x, int y);

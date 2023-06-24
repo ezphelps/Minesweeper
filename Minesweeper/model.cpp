@@ -18,6 +18,7 @@ Model::Model(int width, int height, int numMines, QObject *parent)
       height(height),
       numMines(numMines)
 {
+    squaresLeft = width * height - numMines;
     resetArrays();
 }
 
@@ -140,6 +141,15 @@ void Model::rightClicked(int x, int y)
     }
 }
 
+/// \brief Model::spaceHit
+/// Handles logic of a space bar hit.
+/// \param x
+/// \param y
+void Model::spaceHit(int x, int y)
+{
+
+}
+
 /// \brief Model::setMinefield
 /// Set a minefield.
 /// Logic laws for mine placement.
@@ -210,6 +220,11 @@ void::Model::revealNonMine(int x, int y)
     if(getNumSurroundingMines(x,y) == 0)
     {
         revealZeroSquare(x,y);
+    }
+
+    if(--squaresLeft == 0)
+    {
+        emit playerWins();
     }
 }
 

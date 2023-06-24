@@ -64,16 +64,32 @@ bool MineField::event(QEvent *event)
             return true;
         }
     }
-    /*else if(event->type() == QEvent::KeyPress)
+    else if(event->type() == QEvent::KeyPress)
     {
         QKeyEvent* key = static_cast<QKeyEvent*>(event);
+
+
         if(key->key() == Qt::Key_Space)
         {
-            emit rightClick(QCursor::pos().x(), QCursor::pos().y());
+            QRect geometry = windowPtr->geometry();
+            //std::cout << (QCursor::pos().x() - geometry.x() - 20) / 32 << ", " << (QCursor::pos().y() - geometry.y() - 128) / 32  << std::endl;
+            int sqX, sqY;
+            sqX = QCursor::pos().x() - geometry.x() - 20;
+            sqY = QCursor::pos().y() - geometry.y() - 128;
+
+            emit spaceHit(sqX, sqY);
         }
 
         return true;
-    }*/
+    }
 
     return QWidget::event(event);
+}
+
+/// \brief Minefield::setPtr
+/// \param ptr
+void MineField::setPtr(MinesweeperWindow *ptr)
+{
+    std::cout << "check" << std::endl;
+    windowPtr = ptr;
 }
