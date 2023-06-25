@@ -18,7 +18,7 @@ Model::Model(int width, int height, int numMines, QObject *parent)
       height(height),
       numMines(numMines)
 {
-    squaresLeft = width * height - numMines;
+    squaresLeft = (width * height) - numMines;
     resetArrays();
 }
 
@@ -28,6 +28,7 @@ void Model::restartButton()
     resetArrays();
     firstSquare = true;
     gameOver = false;
+    squaresLeft = (width * height) - numMines;
 
     emit resetMinefield(numMines);
 }
@@ -97,19 +98,7 @@ void Model::squareClicked(int x, int y)
             //User hit a mine.
             if(minefield2dArray[x][y] == 1)
             {
-                gameOver = true;
-
-                //reveal all mines
-                for(int i = 0; i < width; i++)
-                {
-                    for(int j = 0; j < height; j++)
-                    {
-                        if(minefield2dArray[i][j] == 1 && flagsArray[i][j] != 1)
-                        {
-                            emit invalidSquare(i, j);
-                        }
-                    }
-                }
+                endGame();
             }
             //User did not hit a mine.
             else
@@ -147,7 +136,49 @@ void Model::rightClicked(int x, int y)
 /// \param y
 void Model::spaceHit(int x, int y)
 {
-
+    //The square is not revealed.
+    if(squaresClicked[x][y] == 0)
+    {
+        if(flagsArray[x][y] == 0)
+        {
+            flagsArray[x][y] = 1;
+            emit displayFlag(x,y);
+        }
+        else
+        {
+            flagsArray[x][y] = 0;
+            emit removeFlag(x,y);
+        }
+    }
+    else
+    {
+        //All surrounding mines must be marked.
+        if(getNumSurroundingFlags(x,y) == getNumSurroundingMines(x,y))
+        {
+            //Open up mines.
+            for (int i = (x - 1); i <= (x + 1); i++)
+            {
+                for (int j = (y - 1); j <= (y + 1); j++)
+                {
+                    //Check if the square is clicked or flagged.
+                    if (squaresClicked[i][j] == 0 && flagsArray[i][j] == 0)
+                    {
+                        if ((i >= 0) && (i < width) &&
+                            (j >= 0) && (j < height))
+                        {
+                            //make sure the square is valid.
+                            if(minefield2dArray[i][j] == 1)
+                            {
+                                endGame();
+                                return;
+                            }
+                            revealNonMine(i, j);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 /// \brief Model::setMinefield
@@ -185,8 +216,7 @@ void Model::setMinefield(int xCord, int yCord, int width, int height, int numMin
 /// \brief Model::getNumSurroundingMines
 /// \param x
 /// \param y
-/// \return
-/// num surrounding mines
+/// \return - number of surrounding mines
 int Model::getNumSurroundingMines(int x, int y)
 {
     int num = 0;
@@ -198,6 +228,29 @@ int Model::getNumSurroundingMines(int x, int y)
             if ((i >= 0) && (i < width) &&
                 (j >= 0) && (j < height) &&
                 (minefield2dArray[i][j] == 1))
+            {
+                num++;
+            }
+        }
+    }
+    return num;
+}
+
+/// \brief Model::getNumSurroundingFlags
+/// \param x
+/// \param y
+/// \return - number of surrounding flags
+int Model::getNumSurroundingFlags(int x, int y)
+{
+    int num = 0;
+    for (int i = (x - 1); i <= (x + 1); i++)
+    {
+        for (int j = (y - 1); j <= (y + 1); j++)
+        {
+            //Bounds check as well as looking for flags.
+            if ((i >= 0) && (i < width) &&
+                (j >= 0) && (j < height) &&
+                (flagsArray[i][j] == 1))
             {
                 num++;
             }
@@ -226,6 +279,8 @@ void::Model::revealNonMine(int x, int y)
     {
         emit playerWins();
     }
+
+    std::cout << squaresLeft << std::endl;
 }
 
 /// \brief Model::revealZeroSquare
@@ -265,6 +320,25 @@ void Model::resetArrays()
             minefield2dArray[i][j] = 0;
             squaresClicked[i][j] = 0;
             flagsArray[i][j] = 0;
+        }
+    }
+}
+
+/// \brief Model::endGame
+/// Reveals all the mines and ends the game.
+void Model::endGame()
+{
+    gameOver = true;
+
+    //reveal all mines
+    for(int i = 0; i < width; i++)
+    {
+        for(int j = 0; j < height; j++)
+        {
+            if(minefield2dArray[i][j] == 1 && flagsArray[i][j] != 1)
+            {
+                emit invalidSquare(i, j);
+            }
         }
     }
 }

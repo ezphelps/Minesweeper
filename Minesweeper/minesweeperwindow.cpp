@@ -271,8 +271,8 @@ void MinesweeperWindow::removeFlagSlot(int x, int y)
 /// Updates the smiley face for a win.
 void MinesweeperWindow::playerWinsSlot()
 {
-    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[0])));
-    ui->restartButton->setIconSize(buttonImages[0].size());
+    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[3])));
+    ui->restartButton->setIconSize(buttonImages[3].size());
 
     updateMinefield();
 }

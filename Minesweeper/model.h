@@ -48,9 +48,11 @@ private:
 
     void setMinefield(int xCord, int yCord, int width, int height, int numMines);
     int getNumSurroundingMines(int x, int y);
+    int getNumSurroundingFlags(int x, int y);
     void revealNonMine(int x, int y);
     void revealZeroSquare(int x, int y);
     void resetArrays();
+    void endGame();
 };
 
 #endif // MODEL_H

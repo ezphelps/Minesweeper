@@ -90,6 +90,5 @@ bool MineField::event(QEvent *event)
 /// \param ptr
 void MineField::setPtr(MinesweeperWindow *ptr)
 {
-    std::cout << "check" << std::endl;
     windowPtr = ptr;
 }
