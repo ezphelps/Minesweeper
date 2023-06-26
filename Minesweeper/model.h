@@ -30,8 +30,10 @@ signals:
     void unselectSquare(int x, int y);
     void validSquare(int numMines, int x, int y);
     void invalidSquare(int x, int y);
+    void hitMine(int x, int y);
     void displayFlag(int x, int y);
     void removeFlag(int x, int y);
+    void falseFlag(int x, int y);
     void playerWins();
 
 private:
@@ -52,7 +54,7 @@ private:
     void revealNonMine(int x, int y);
     void revealZeroSquare(int x, int y);
     void resetArrays();
-    void endGame();
+    void endGame(int x, int y);
 };
 
 #endif // MODEL_H

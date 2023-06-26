@@ -40,12 +40,14 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     connect(this, &MinesweeperWindow::squareClicked, &model, &Model::squareClicked);
     connect(&model, &Model::validSquare, this, &MinesweeperWindow::validSquareSlot);
     connect(&model, &Model::invalidSquare, this, &MinesweeperWindow::invalidSquareSlot);
+    connect(&model, &Model::hitMine, this, &MinesweeperWindow::hitMineSlot);
 
     //right click
     connect(ui->label, &MineField::rightClick, this, &MinesweeperWindow::rightCLickSlot);
     connect(this, &MinesweeperWindow::rightClicked, &model, &Model::rightClicked);
     connect(&model, &Model::displayFlag, this, &MinesweeperWindow::displayFlagSlot);
     connect(&model, &Model::removeFlag, this, &MinesweeperWindow::removeFlagSlot);
+    connect(&model, &Model::falseFlag, this, &MinesweeperWindow::falseFlagSlot);
 
     //space bar
     connect(ui->label, &MineField::spaceHit, this, &MinesweeperWindow::spaceHitSlot);
@@ -77,7 +79,20 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     images[7] =  deserializer.deserializeSSP(":/squareImages/seven.ssp");
     images[8] =  deserializer.deserializeSSP(":/squareImages/eight.ssp");
     images[9] =  deserializer.deserializeSSP(":/squareImages/mine.ssp");
-    images[10] = deserializer.deserializeSSP(":/squareImages/flag.ssp");
+    images[10] = deserializer.deserializeSSP(":/squareImages/hitMine.ssp");
+    images[11] = deserializer.deserializeSSP(":/squareImages/flag.ssp");
+    images[12] = deserializer.deserializeSSP(":/squareImages/falseFlag.ssp");
+
+    timeNums[0] = deserializer.deserializeSSP(":/timeNums/timeZero.ssp");
+    timeNums[1] = deserializer.deserializeSSP(":/timeNums/timeOne.ssp");
+    timeNums[2] = deserializer.deserializeSSP(":/timeNums/timeTwo.ssp");
+    timeNums[3] = deserializer.deserializeSSP(":/timeNums/timeThree.ssp");
+    timeNums[4] = deserializer.deserializeSSP(":/timeNums/timeFour.ssp");
+    timeNums[5] = deserializer.deserializeSSP(":/timeNums/timeFive.ssp");
+    timeNums[6] = deserializer.deserializeSSP(":/timeNums/timeSix.ssp");
+    timeNums[7] = deserializer.deserializeSSP(":/timeNums/timeSeven.ssp");
+    timeNums[8] = deserializer.deserializeSSP(":/timeNums/timeEight.ssp");
+    timeNums[9] = deserializer.deserializeSSP(":/timeNums/timeNine.ssp");
 
     buttonImages[0] = deserializer.deserializeSSP(":/squareImages/smileyFace.ssp");
     buttonImages[1] = deserializer.deserializeSSP(":/squareImages/ohFace.ssp");
@@ -200,6 +215,27 @@ void MinesweeperWindow::validSquareSlot(int numMines, int x, int y)
     updateMinefield();
 }
 
+/// \brief hitMineSlot
+/// Gets a signal from the model.
+/// Red color mine and death face.
+/// \param x
+/// \param y
+ void MinesweeperWindow::hitMineSlot(int x, int y)
+ {
+    for(int i = 0; i < 32; i++)
+     {
+        for(int j = 0; j < 32; j++)
+        {
+           minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, images[10].pixelColor(QPoint(i,j)));
+        }
+    }
+
+    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[2])));
+    ui->restartButton->setIconSize(buttonImages[2].size());
+
+    updateMinefield();
+ }
+
 /// \brief MinesweeperWindow::invalidSquareSlot
 /// Gets signal from the model.
 /// The user clicked on a mine.
@@ -214,9 +250,6 @@ void MinesweeperWindow::invalidSquareSlot(int x, int y)
             minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, images[9].pixelColor(QPoint(i,j)));
         }
     }
-
-    ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[2])));
-    ui->restartButton->setIconSize(buttonImages[2].size());
 
     updateMinefield();
 }
@@ -249,7 +282,7 @@ void MinesweeperWindow::displayFlagSlot(int x, int y)
     {
         for(int j = 0; j < 32; j++)
         {
-            minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, images[10].pixelColor(QPoint(i,j)));
+            minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, images[11].pixelColor(QPoint(i,j)));
         }
     }
 
@@ -263,6 +296,23 @@ void MinesweeperWindow::displayFlagSlot(int x, int y)
 void MinesweeperWindow::removeFlagSlot(int x, int y)
 {
     shadeSquare(x, y);
+
+    updateMinefield();
+}
+
+/// \brief MinesweeperWindow::falseFlagSlot
+/// Gets a signal from the model.
+/// \param x
+/// \param y
+void MinesweeperWindow::falseFlagSlot(int x, int y)
+{
+    for(int i = 0; i < 32; i++)
+    {
+        for(int j = 0; j < 32; j++)
+        {
+            minefieldImage.setPixelColor(x * 32 + i, y * 32 + j, images[12].pixelColor(QPoint(i,j)));
+        }
+    }
 
     updateMinefield();
 }

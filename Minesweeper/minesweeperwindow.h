@@ -34,11 +34,13 @@ public slots:
     void unselectSquareSlot(int x, int y);
     void squareClickedSlot(int x, int y);
     void validSquareSlot(int numMines, int x, int y);
+    void hitMineSlot(int x, int y);
     void invalidSquareSlot(int x, int y);
     void rightCLickSlot(int x, int y);
     void spaceHitSlot(int x, int y);
     void displayFlagSlot(int x, int y);
     void removeFlagSlot(int x, int y);
+    void falseFlagSlot(int x, int y);
     void playerWinsSlot();
 
 signals:
@@ -56,7 +58,8 @@ private:
     sspDeserializer deserializer;
     int sizeX, sizeY;
     QImage minefieldImage;
-    array<QImage, 11> images;
+    array<QImage, 13> images;
+    array<QImage, 10> timeNums;
     array<QImage, 4> buttonImages;
 
     void shadeSquare(int i, int j);

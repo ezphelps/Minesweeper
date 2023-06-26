@@ -60,12 +60,12 @@ void Model::mouseDrag(int x, int y)
             emit unselectSquare(mouseX, mouseY);
         }
 
+        mouseX = x;
+        mouseY = y;
+
         //Select the new square if that one hasn't been revealed.
         if(squaresClicked[x][y] == 0)
         {
-            mouseX = x;
-            mouseY = y;
-
             emit selectSquare(mouseX, mouseY);
         }
     }
@@ -98,7 +98,7 @@ void Model::squareClicked(int x, int y)
             //User hit a mine.
             if(minefield2dArray[x][y] == 1)
             {
-                endGame();
+                endGame(x, y);
             }
             //User did not hit a mine.
             else
@@ -169,7 +169,7 @@ void Model::spaceHit(int x, int y)
                             //make sure the square is valid.
                             if(minefield2dArray[i][j] == 1)
                             {
-                                endGame();
+                                endGame(i, j);
                                 return;
                             }
                             revealNonMine(i, j);
@@ -279,8 +279,6 @@ void::Model::revealNonMine(int x, int y)
     {
         emit playerWins();
     }
-
-    std::cout << squaresLeft << std::endl;
 }
 
 /// \brief Model::revealZeroSquare
@@ -326,7 +324,7 @@ void Model::resetArrays()
 
 /// \brief Model::endGame
 /// Reveals all the mines and ends the game.
-void Model::endGame()
+void Model::endGame(int x, int y)
 {
     gameOver = true;
 
@@ -335,8 +333,19 @@ void Model::endGame()
     {
         for(int j = 0; j < height; j++)
         {
-            if(minefield2dArray[i][j] == 1 && flagsArray[i][j] != 1)
+            if(i == x && j == y)
             {
+                //hit mine
+                emit hitMine(i, j);
+            }
+            else if(minefield2dArray[i][j] == 0 && flagsArray[i][j] == 1)
+            {
+                //false flag
+                emit falseFlag(i, j);
+            }
+            else if(minefield2dArray[i][j] == 1 && flagsArray[i][j] != 1)
+            {
+                //regular mine
                 emit invalidSquare(i, j);
             }
         }

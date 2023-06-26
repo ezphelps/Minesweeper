@@ -15,5 +15,19 @@
         <file>ohFace.ssp</file>
         <file>deathFace.ssp</file>
         <file>shadesFace.ssp</file>
+        <file>falseFlag.ssp</file>
+        <file>hitMine.ssp</file>
+    </qresource>
+    <qresource prefix="/timeNums">
+        <file>timeZero.ssp</file>
+        <file>timeThree.ssp</file>
+        <file>timeTwo.ssp</file>
+        <file>timeOne.ssp</file>
+        <file>timeSeven.ssp</file>
+        <file>timeSix.ssp</file>
+        <file>timeEight.ssp</file>
+        <file>timeFive.ssp</file>
+        <file>timeFour.ssp</file>
+        <file>timeNine.ssp</file>
     </qresource>
 </RCC>
