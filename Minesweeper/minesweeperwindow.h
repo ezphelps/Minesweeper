@@ -38,8 +38,8 @@ public slots:
     void invalidSquareSlot(int x, int y);
     void rightCLickSlot(int x, int y);
     void spaceHitSlot(int x, int y);
-    void displayFlagSlot(int x, int y);
-    void removeFlagSlot(int x, int y);
+    void displayFlagSlot(int minesLeft, int x, int y);
+    void removeFlagSlot(int minesLeft, int x, int y);
     void falseFlagSlot(int x, int y);
     void playerWinsSlot();
 
@@ -64,5 +64,6 @@ private:
 
     void shadeSquare(int i, int j);
     void updateMinefield();
+    void setNumMines(int numMines);
 };
 #endif // MINESWEEPERWINDOW_H

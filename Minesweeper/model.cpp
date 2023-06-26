@@ -16,7 +16,8 @@ Model::Model(int width, int height, int numMines, QObject *parent)
       mouseY(0),
       width(width),
       height(height),
-      numMines(numMines)
+      numMines(numMines),
+      unmarkedMines(numMines)
 {
     squaresLeft = (width * height) - numMines;
     resetArrays();
@@ -28,6 +29,7 @@ void Model::restartButton()
     resetArrays();
     firstSquare = true;
     gameOver = false;
+    unmarkedMines = numMines;
     squaresLeft = (width * height) - numMines;
 
     emit resetMinefield(numMines);
@@ -120,13 +122,15 @@ void Model::rightClicked(int x, int y)
     if(flagsArray[x][y] == 0)
     {
         flagsArray[x][y] = 1;
-        emit displayFlag(x, y);
+        unmarkedMines--;
+        emit displayFlag(unmarkedMines, x, y);
     }
     //Remove the flag.
     else
     {
         flagsArray[x][y] = 0;
-        emit removeFlag(x, y);
+        unmarkedMines++;
+        emit removeFlag(unmarkedMines, x, y);
     }
 }
 
@@ -142,12 +146,14 @@ void Model::spaceHit(int x, int y)
         if(flagsArray[x][y] == 0)
         {
             flagsArray[x][y] = 1;
-            emit displayFlag(x,y);
+            unmarkedMines--;
+            emit displayFlag(unmarkedMines, x, y);
         }
         else
         {
             flagsArray[x][y] = 0;
-            emit removeFlag(x,y);
+            unmarkedMines++;
+            emit removeFlag(unmarkedMines, x, y);
         }
     }
     else

@@ -102,6 +102,7 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[0])));
     ui->restartButton->setIconSize(buttonImages[0].size());
 
+    setNumMines(99);
     updateMinefield();
 }
 
@@ -137,6 +138,7 @@ void MinesweeperWindow::resetMinefieldSlot(int numMines)
     ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[0])));
     ui->restartButton->setIconSize(buttonImages[0].size());
 
+    setNumMines(numMines);
     updateMinefield();
 }
 
@@ -276,7 +278,7 @@ void MinesweeperWindow::spaceHitSlot(int x, int y)
 /// Gets signal from the model.
 /// \param x
 /// \param y
-void MinesweeperWindow::displayFlagSlot(int x, int y)
+void MinesweeperWindow::displayFlagSlot(int minesLeft, int x, int y)
 {
     for(int i = 0; i < 32; i++)
     {
@@ -286,6 +288,7 @@ void MinesweeperWindow::displayFlagSlot(int x, int y)
         }
     }
 
+    setNumMines(minesLeft);
     updateMinefield();
 }
 
@@ -293,10 +296,11 @@ void MinesweeperWindow::displayFlagSlot(int x, int y)
 /// Gets signal from the model.
 /// \param x
 /// \param y
-void MinesweeperWindow::removeFlagSlot(int x, int y)
+void MinesweeperWindow::removeFlagSlot(int minesLeft, int x, int y)
 {
     shadeSquare(x, y);
 
+    setNumMines(minesLeft);
     updateMinefield();
 }
 
@@ -386,4 +390,45 @@ void MinesweeperWindow::updateMinefield()
 {
     ui->label->setPixmap(QPixmap::fromImage(minefieldImage).scaled(960, 512, Qt::IgnoreAspectRatio, Qt::FastTransformation));
     ui->label->setFocus();
+}
+
+/// \brief MinesweeperWindow::setNumMines
+/// \param numMines
+void MinesweeperWindow::setNumMines(int numMines)
+{
+    int hunds,tens,ones;
+    hunds = numMines / 100;
+    tens = numMines % 100 /10;
+    ones = numMines % 10;
+
+    QImage number(QImage(99, 64, QImage::Format_ARGB32));
+
+    //hundreds
+    for(int i = 0; i < 33; i++)
+    {
+        for(int j = 0; j < 64; j++)
+        {
+            number.setPixelColor(i, j, timeNums[hunds].pixelColor(QPoint(i,j)));
+        }
+    }
+
+    //tens
+    for(int i = 0; i < 33; i++)
+    {
+        for(int j = 0; j < 64; j++)
+        {
+            number.setPixelColor(i + 33, j, timeNums[tens].pixelColor(QPoint(i,j)));
+        }
+    }
+
+    //ones
+    for(int i = 0; i < 33; i++)
+    {
+        for(int j = 0; j < 64; j++)
+        {
+            number.setPixelColor(i + 66, j, timeNums[ones].pixelColor(QPoint(i,j)));
+        }
+    }
+
+    ui->numMinesLabel->setPixmap(QPixmap::fromImage(number).scaled(99, 64, Qt::IgnoreAspectRatio, Qt::FastTransformation));
 }

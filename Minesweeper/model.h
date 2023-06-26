@@ -31,8 +31,8 @@ signals:
     void validSquare(int numMines, int x, int y);
     void invalidSquare(int x, int y);
     void hitMine(int x, int y);
-    void displayFlag(int x, int y);
-    void removeFlag(int x, int y);
+    void displayFlag(int minesLeft, int x, int y);
+    void removeFlag(int minesLeft, int x, int y);
     void falseFlag(int x, int y);
     void playerWins();
 
@@ -46,6 +46,7 @@ private:
     bool mouseDragging;
     int mouseX, mouseY;
     int width, height, numMines;
+    int unmarkedMines;
     int squaresLeft;
 
     void setMinefield(int xCord, int yCord, int width, int height, int numMines);
