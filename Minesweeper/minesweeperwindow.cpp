@@ -28,6 +28,9 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     connect(this, &MinesweeperWindow::restartButton, &model, &Model::restartButton);
     connect(&model, &Model::resetMinefield, this, &MinesweeperWindow::resetMinefieldSlot);
 
+    //timer
+    connect(&model, &Model::updateSeconds, this, &MinesweeperWindow::updateSeconds);
+
     //mouse press
     connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::mouseDraggingSlot);
     connect(this, &MinesweeperWindow::mouseDrag, &model, &Model::mouseDrag);
@@ -103,6 +106,7 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     ui->restartButton->setIconSize(buttonImages[0].size());
 
     setNumMines(99);
+    updateSeconds(0);
     updateMinefield();
 }
 
@@ -140,6 +144,48 @@ void MinesweeperWindow::resetMinefieldSlot(int numMines)
 
     setNumMines(numMines);
     updateMinefield();
+}
+
+/// \brief MinesweeperWindow::updateSeconds
+/// Gets a signal from the model.
+/// \param seconds
+void MinesweeperWindow::updateSeconds(int seconds)
+{
+    int hunds,tens,ones;
+    hunds = seconds / 100;
+    tens = seconds % 100 /10;
+    ones = seconds % 10;
+
+    QImage time(QImage(99, 64, QImage::Format_ARGB32));
+
+    //hundreds
+    for(int i = 0; i < 33; i++)
+    {
+        for(int j = 0; j < 64; j++)
+        {
+            time.setPixelColor(i, j, timeNums[hunds].pixelColor(QPoint(i,j)));
+        }
+    }
+
+    //tens
+    for(int i = 0; i < 33; i++)
+    {
+        for(int j = 0; j < 64; j++)
+        {
+            time.setPixelColor(i + 33, j, timeNums[tens].pixelColor(QPoint(i,j)));
+        }
+    }
+
+    //ones
+    for(int i = 0; i < 33; i++)
+    {
+        for(int j = 0; j < 64; j++)
+        {
+            time.setPixelColor(i + 66, j, timeNums[ones].pixelColor(QPoint(i,j)));
+        }
+    }
+
+    ui->timerLabel->setPixmap(QPixmap::fromImage(time).scaled(99, 64, Qt::IgnoreAspectRatio, Qt::FastTransformation));
 }
 
 /// \brief MinesweeperWindow::mouseDraggingSLot

@@ -6,6 +6,7 @@
 
 #include <QObject>
 #include <algorithm>
+#include <QTimer>
 #include <iostream>
 
 using std::array;
@@ -23,6 +24,7 @@ public slots:
     void squareClicked(int x, int y);
     void rightClicked(int x, int y);
     void spaceHit(int x, int y);
+    void timerExpired();
 
 signals:
     void resetMinefield(int numMines);
@@ -35,12 +37,15 @@ signals:
     void removeFlag(int minesLeft, int x, int y);
     void falseFlag(int x, int y);
     void playerWins();
+    void updateSeconds(int time);
 
 private:
     array<array<int, 16>, 30> minefield2dArray;
     array<array<int, 16>, 30> squaresClicked;
     array<array<int, 16>, 30> flagsArray;
 
+    QTimer timer;
+    int seconds;
     bool firstSquare;
     bool gameOver;
     bool mouseDragging;

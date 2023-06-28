@@ -9,6 +9,8 @@
 /// \param parent
 Model::Model(int width, int height, int numMines, QObject *parent)
     : QObject{parent},
+      timer(this),
+      seconds(0),
       firstSquare(true),
       gameOver(false),
       mouseDragging(false),
@@ -21,18 +23,23 @@ Model::Model(int width, int height, int numMines, QObject *parent)
 {
     squaresLeft = (width * height) - numMines;
     resetArrays();
+
+    connect(&timer, &QTimer::timeout, this, &Model::timerExpired);
 }
 
 /// \brief Model::restartButton
 void Model::restartButton()
 {
     resetArrays();
+    timer.stop();
+    seconds = 0;
     firstSquare = true;
     gameOver = false;
     unmarkedMines = numMines;
     squaresLeft = (width * height) - numMines;
 
     emit resetMinefield(numMines);
+    emit updateSeconds(0);
 }
 
 /// \brief Model::mouseDrag
@@ -94,6 +101,7 @@ void Model::squareClicked(int x, int y)
             firstSquare = false;
             setMinefield(x, y, width, height, numMines);
             revealNonMine(x,y);
+            timer.start(1000);
         }
         else
         {
@@ -184,6 +192,18 @@ void Model::spaceHit(int x, int y)
                 }
             }
         }
+    }
+}
+
+/// \brief Model::timerExpired
+/// Gets signal from the timer.
+/// Updates seconds then emits a signal for the view.
+void Model::timerExpired()
+{
+    if(seconds < 999)
+    {
+        seconds++;
+        emit updateSeconds(seconds);
     }
 }
 
@@ -281,8 +301,10 @@ void::Model::revealNonMine(int x, int y)
         revealZeroSquare(x,y);
     }
 
+    //Player wins
     if(--squaresLeft == 0)
     {
+        timer.stop();
         emit playerWins();
     }
 }
@@ -333,6 +355,7 @@ void Model::resetArrays()
 void Model::endGame(int x, int y)
 {
     gameOver = true;
+    timer.stop();
 
     //reveal all mines
     for(int i = 0; i < width; i++)
