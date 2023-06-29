@@ -29,7 +29,7 @@ public:
 public slots:
     void restartButtonSlot();
     void resetMinefieldSlot(int numMines);
-    void updateSeconds(int seconds);
+    void updateSecondsSlot(int seconds);
     void mouseDraggingSlot(int x, int y);
     void showSelectedSquareSlot(int x, int y);
     void unselectSquareSlot(int x, int y);

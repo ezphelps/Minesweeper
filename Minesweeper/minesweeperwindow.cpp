@@ -19,7 +19,7 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    //Set pointer to this
+    //Set pointer in minefield to "this"
     connect(this, &MinesweeperWindow::setWindowPtr, ui->label, &MineField::setPtr);
     emit setWindowPtr(this);
 
@@ -29,7 +29,7 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     connect(&model, &Model::resetMinefield, this, &MinesweeperWindow::resetMinefieldSlot);
 
     //timer
-    connect(&model, &Model::updateSeconds, this, &MinesweeperWindow::updateSeconds);
+    connect(&model, &Model::updateSeconds, this, &MinesweeperWindow::updateSecondsSlot);
 
     //mouse press
     connect(ui->label, &MineField::mousePressed, this, &MinesweeperWindow::mouseDraggingSlot);
@@ -106,7 +106,7 @@ MinesweeperWindow::MinesweeperWindow(QWidget *parent)
     ui->restartButton->setIconSize(buttonImages[0].size());
 
     setNumMines(99);
-    updateSeconds(0);
+    updateSecondsSlot(0);
     updateMinefield();
 }
 
@@ -146,10 +146,10 @@ void MinesweeperWindow::resetMinefieldSlot(int numMines)
     updateMinefield();
 }
 
-/// \brief MinesweeperWindow::updateSeconds
+/// \brief MinesweeperWindow::updateSecondsSlot
 /// Gets a signal from the model.
 /// \param seconds
-void MinesweeperWindow::updateSeconds(int seconds)
+void MinesweeperWindow::updateSecondsSlot(int seconds)
 {
     int hunds,tens,ones;
     hunds = seconds / 100;
@@ -373,6 +373,8 @@ void MinesweeperWindow::playerWinsSlot()
 {
     ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[3])));
     ui->restartButton->setIconSize(buttonImages[3].size());
+
+    ui->label->setEnabled(false);
 
     updateMinefield();
 }

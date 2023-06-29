@@ -48,6 +48,11 @@ void Model::restartButton()
 /// \param y
 void Model::mouseDrag(int x, int y)
 {
+    if(gameOver)
+    {
+        return;
+    }
+
     //The mouse drag just started.
     if(!mouseDragging)
     {
@@ -126,6 +131,11 @@ void Model::squareClicked(int x, int y)
 /// \param y
 void Model::rightClicked(int x, int y)
 {
+    if(gameOver)
+    {
+        return;
+    }
+
     //Display flag.
     if(flagsArray[x][y] == 0)
     {
@@ -148,6 +158,11 @@ void Model::rightClicked(int x, int y)
 /// \param y
 void Model::spaceHit(int x, int y)
 {
+    if(gameOver)
+    {
+        return;
+    }
+
     //The square is not revealed.
     if(squaresClicked[x][y] == 0)
     {
@@ -304,7 +319,22 @@ void::Model::revealNonMine(int x, int y)
     //Player wins
     if(--squaresLeft == 0)
     {
+        gameOver = true;
         timer.stop();
+
+        for(int i = 0; i < width; i++)
+        {
+            for(int j = 0; j < height; j++)
+            {
+                if(minefield2dArray[i][j] == 1 && flagsArray[i][j] == 0)
+                {
+                    flagsArray[i][j] = 1;
+                    numMines--;
+                    emit displayFlag(numMines, i, j);
+                }
+            }
+        }
+
         emit playerWins();
     }
 }
