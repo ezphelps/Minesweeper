@@ -374,8 +374,6 @@ void MinesweeperWindow::playerWinsSlot()
     ui->restartButton->setIcon(QIcon(QPixmap::fromImage(buttonImages[3])));
     ui->restartButton->setIconSize(buttonImages[3].size());
 
-    ui->label->setEnabled(false);
-
     updateMinefield();
 }
 

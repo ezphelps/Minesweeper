@@ -52,7 +52,7 @@ bool MineField::event(QEvent *event)
             return true;
         }
     }
-    //Mouse is moving
+    //Mouse is moving with mouse press
     else if(event->type() == QEvent::MouseMove)
     {
         QMouseEvent* mEvent = (QMouseEvent*)event;
@@ -64,6 +64,7 @@ bool MineField::event(QEvent *event)
             return true;
         }
     }
+    //Spacebar Released
     else if(event->type() == QEvent::KeyPress)
     {
         QKeyEvent* key = static_cast<QKeyEvent*>(event);
@@ -72,10 +73,10 @@ bool MineField::event(QEvent *event)
         if(key->key() == Qt::Key_Space)
         {
             QRect geometry = windowPtr->geometry();
-            //std::cout << (QCursor::pos().x() - geometry.x() - 20) / 32 << ", " << (QCursor::pos().y() - geometry.y() - 128) / 32  << std::endl;
+
             int sqX, sqY;
-            sqX = QCursor::pos().x() - geometry.x() - 20;
-            sqY = QCursor::pos().y() - geometry.y() - 128;
+            sqX = QCursor::pos().x() - geometry.x() - 20;  // Screen-based curser location subtracting the location of
+            sqY = QCursor::pos().y() - geometry.y() - 128; // the mineminesweeperwindow and the minefield location within that.
 
             emit spaceHit(sqX, sqY);
         }
