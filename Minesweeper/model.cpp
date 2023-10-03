@@ -329,8 +329,8 @@ void::Model::revealNonMine(int x, int y)
                 if(minefield2dArray[i][j] == 1 && flagsArray[i][j] == 0)
                 {
                     flagsArray[i][j] = 1;
-                    numMines--;
-                    emit displayFlag(numMines, i, j);
+                    unmarkedMines--;
+                    emit displayFlag(unmarkedMines, i, j);
                 }
             }
         }
